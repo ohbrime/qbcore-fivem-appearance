@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS `player_appearance` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `citizenid` varchar(255) NOT NULL,
   `skin` text NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=107 DEFAULT CHARSET=latin1;
 
