@@ -2,7 +2,7 @@
 
 This is something i converted for my server a couple of days ago. I do not take any credit for the UI all I've done is converted the LUA side with clothing shops, barber shops and saved outfits from https://github.com/ZiggyJoJo/brp-fivem-appearance
 
-The official Orignal Script was from https://forum.cfx.re/t/release-fivem-appearance/2438537
+The Official Orignal Script was from https://forum.cfx.re/t/release-fivem-appearance/2438537
 
 ## Dependencies
 
@@ -17,7 +17,6 @@ The official Orignal Script was from https://forum.cfx.re/t/release-fivem-appear
 - Run the Appearance.sql
 
 ```
-
 ## Server Config
 
 ```cfg
