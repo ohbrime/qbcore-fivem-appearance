@@ -13,7 +13,7 @@ Orginal Script + UI: https://forum.cfx.re/t/release-fivem-appearance/2438537
 
 ## Setup
 ```
-- Remove brime- frome brime-fivem-appearance or it will not work.
+- Remove brime- from brime-fivem-appearance or it will not work.
 - Rename QBCore to your Core Name.
 - Run the Appearance.sql
 ```
