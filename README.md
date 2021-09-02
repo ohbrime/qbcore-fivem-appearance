@@ -27,3 +27,4 @@ setr fivem-appearance:locale "en"
 ```
 
 ## Preview
+https://youtu.be/q-rd7fKF-Pg
