@@ -12,7 +12,7 @@ The Official Orignal Script was from https://forum.cfx.re/t/release-fivem-appear
 - CD Draw text UI (Can be easily replaced) https://forum.cfx.re/t/free-release-draw-text-ui/1885313
 
 ## Setup
-
+```
 - Rename QBCore to your Core Name.
 - Run the Appearance.sql
 
