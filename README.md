@@ -8,7 +8,7 @@ Orginal Script + UI: https://forum.cfx.re/t/release-fivem-appearance/2438537
 
 - QBCore
 - NeroHiro’s Context Menu https://forum.cfx.re/t/release-standalone-nerohiro-s-context-menu-dynamic-event-firing-menu/2564083
-- NeroHiro’s Keyboard (Can be easily replaced) https://forum.cfx.re/t/release-standalone-nerohiro-s-keyboard-dynamic-nui-keyboard-input/2506326
+- Brime’s Keyboard (Can be easily replaced) https://github.com/ohbrime/brime-keyboard
 - CD Draw text UI (Can be easily replaced) https://forum.cfx.re/t/free-release-draw-text-ui/1885313
 
 ## Setup
