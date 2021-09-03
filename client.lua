@@ -539,7 +539,7 @@ AddEventHandler('fivem-appearance:setpdPreset', function(data)
 end)
 
 RegisterNetEvent('fivem-appearance:saveOutfit', function()
-	local keyboard = exports["qb-keyboard"]:KeyboardInput({
+	local keyboard = exports["brime-keyboard"]:KeyboardInput({
 		header = "Name Outfit", 
 		rows = {
 			{
