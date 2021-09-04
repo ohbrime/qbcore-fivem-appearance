@@ -7,7 +7,7 @@ Orginal Script + UI: https://forum.cfx.re/t/release-fivem-appearance/2438537
 ## Dependencies
 
 - QBCore
-- NeroHiro’s Context Menu https://forum.cfx.re/t/release-standalone-nerohiro-s-context-menu-dynamic-event-firing-menu/2564083
+- Brime’s Context Menu https://github.com/ohbrime/brime-context
 - Brime’s Keyboard (Can be easily replaced) https://github.com/ohbrime/brime-keyboard
 - CD Draw text UI (Can be easily replaced) https://forum.cfx.re/t/free-release-draw-text-ui/1885313
 
