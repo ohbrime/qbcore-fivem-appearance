@@ -10,9 +10,9 @@ AddEventHandler('fivem-appearance:save', function(appearance)
 
     QBCore.Functions.ExecuteSql(false, 'SELECT * FROM `player_appearance` WHERE `citizenid` = "'..xPlayer.PlayerData.citizenid..'"', function(result)
         if result ~= nil and result[1] ~= nil then
-            QBCore.Functions.ExecuteSql(false, 'UPDATE `player_appearance` SET `skin` = "'..QBCore.EscapeSqli(Skin)..'" WHERE `citizenid` = "'..xPlayer.PlayerData.citizenid..'"')
+            exports['ghmattimysql']:execute('UPDATE `player_appearance` SET `skin` = "'..QBCore.EscapeSqli(Skin)..'" WHERE `citizenid` = "'..xPlayer.PlayerData.citizenid..'"')
         else
-            QBCore.Functions.ExecuteSql(false, "INSERT INTO `player_appearance` (`citizenid`, `skin`) VALUES ('"..xPlayer.PlayerData.citizenid.."', '"..QBCore.EscapeSqli(Skin).."')")
+            exports['ghmattimysql']:execute("INSERT INTO `player_appearance` (`citizenid`, `skin`) VALUES ('"..xPlayer.PlayerData.citizenid.."', '"..QBCore.EscapeSqli(Skin).."')")
         end
     end)
 end)
@@ -20,7 +20,7 @@ end)
 QBCore.Functions.CreateCallback('fivem-appearance:getPlayerSkin', function(source, cb, skin)
     local xPlayer = QBCore.Functions.GetPlayer(source)
 
-    QBCore.Functions.ExecuteSql(false, 'SELECT * FROM `player_appearance` WHERE `citizenid` = "'..xPlayer.PlayerData.citizenid..'"', function(result)
+    exports['ghmattimysql']:execute('SELECT * FROM `player_appearance` WHERE `citizenid` = "'..xPlayer.PlayerData.citizenid..'"', function(result)
         if result ~= nil and result[1] ~= nil then
             local Skin = json.decode(result[1].skin)
             cb(Skin)
@@ -41,7 +41,7 @@ AddEventHandler("fivem-appearance:saveOutfit", function(name, pedModel, pedCompo
 	local Props = json.encode(pedProps)
 
 	print('saved')
-    QBCore.Functions.ExecuteSql(false, "INSERT INTO `player_outfits` (`citizenid`, `name`, `ped`, `components`, `props`) VALUES ('"..xPlayer.PlayerData.citizenid.."', '"..QBCore.EscapeSqli(Outfit).."' , '"..QBCore.EscapeSqli(Model).."', '"..QBCore.EscapeSqli(Components).."', '"..QBCore.EscapeSqli(Props).."')")
+    exports['ghmattimysql']:execute("INSERT INTO `player_outfits` (`citizenid`, `name`, `ped`, `components`, `props`) VALUES ('"..xPlayer.PlayerData.citizenid.."', '"..QBCore.EscapeSqli(Outfit).."' , '"..QBCore.EscapeSqli(Model).."', '"..QBCore.EscapeSqli(Components).."', '"..QBCore.EscapeSqli(Props).."')")
 end)
 
 RegisterServerEvent("fivem-appearance:getOutfit")
