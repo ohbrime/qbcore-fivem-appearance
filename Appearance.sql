@@ -1,13 +1,10 @@
-CREATE TABLE `player_appearance` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `citizenid` varchar(255) NOT NULL,
-  `skin` text NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=107 DEFAULT CHARSET=latin1;
+ALTER TABLE `players`
+	ADD COLUMN `skin` LONGTEXT
+;
 
-CREATE TABLE `player_pdpresets` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `player_outfits` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `citizenid` varchar(50) DEFAULT NULL,
   `name` longtext,
   `ped` longtext,
   `components` longtext,
@@ -16,9 +13,8 @@ CREATE TABLE `player_pdpresets` (
   UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-CREATE TABLE `player_outfits` (
+CREATE TABLE `player_pdpresets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `citizenid` varchar(255) NOT NULL,
   `name` longtext,
   `ped` longtext,
   `components` longtext,

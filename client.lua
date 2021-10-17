@@ -1,40 +1,20 @@
+QBCore = exports['qb-core']:GetCoreObject()
 local LastZone                = nil
 local CurrentAction           = nil
 local CurrentActionMsg        = ''
 local hasAlreadyEnteredMarker = false
 local allMyOutfits = {}
-local StoreCost = 250;
 
-QBCore = nil
+-- Events
 
-Citizen.CreateThread(function()
-    while true do
-        Citizen.Wait(10)
-        if QBCore == nil then
-            TriggerEvent("QBCore:GetObject", function(obj) QBCore = obj end)
-            Citizen.Wait(200)
-        end
-    end
-end)
-
-RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
-AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
-    Citizen.SetTimeout(2000, function()
-        QBCore.Functions.TriggerCallback('fivem-appearance:getPlayerSkin', function(appearance)
-		exports['fivem-appearance']:setPlayerAppearance(appearance)
-        isLoggedIn = true
-		end)
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
+    QBCore.Functions.TriggerCallback('fivem-appearance:getPlayerSkin', function(appearance)
+	exports['fivem-appearance']:setPlayerAppearance(appearance)
+    isLoggedIn = true
     end)
 end)
 
-RegisterCommand('reloadskin', function()
-	QBCore.Functions.TriggerCallback('fivem-appearance:getPlayerSkin', function(appearance)
-		exports['fivem-appearance']:setPlayerAppearance(appearance)
-	end)
-end)
-
-RegisterNetEvent('fivem-appearance:client:CreateFirstCharacter')
-AddEventHandler('fivem-appearance:client:CreateFirstCharacter', function()
+RegisterNetEvent('fivem-appearance:CreateFirstCharacter', function()
 	local config = {
 		ped = true,
 		headBlend = true,
@@ -46,7 +26,7 @@ AddEventHandler('fivem-appearance:client:CreateFirstCharacter', function()
 
 	exports['fivem-appearance']:setPlayerAppearance(appearance)
 
-	exports['fivem-appearance']:startPlayerCustomization(function (appearance)
+	exports['fivem-appearance']:startPlayerCustomization(function(appearance)
 		if (appearance) then
 			TriggerServerEvent('fivem-appearance:save', appearance)
 			print('Saved')
@@ -56,127 +36,12 @@ AddEventHandler('fivem-appearance:client:CreateFirstCharacter', function()
 	end, config)
 end, false)
 
--- RegisterCommand('appearance', function()
--- 	local config = {
--- 		ped = true,
--- 		headBlend = true,
--- 		faceFeatures = true,
--- 		headOverlays = true,
--- 		components = true,
--- 		props = true,
--- 	}
--- 	exports['fivem-appearance']:startPlayerCustomization(function (appearance)
--- 		if (appearance) then
--- 			TriggerServerEvent('fivem-appearance:save', appearance)
--- 			print('Saved')
--- 		else
--- 			print('Canceled')
--- 		end
--- 	end, config)
--- end, false)
-
-Citizen.CreateThread(function()
-	while true do
-		local playerCoords, isInClothingShop, isInPDPresets, isInBarberShop, currentZone, letSleep = GetEntityCoords(PlayerPedId()), false, false, nil, true
-		local sleep = 2000
-		for k,v in pairs(Config.ClothingShops) do
-			local data = v
-			local distance = #(playerCoords - data.coords)
-
-			if distance < Config.DrawDistance then
-				sleep = 0
-				if distance < data.MarkerSize.x then
-					isInClothingShop, currentZone = true, k
-				end
-			end
-		end
-
-		for k,v in pairs(Config.PDPresets) do
-			local data = v
-			local distance = #(playerCoords - data.coordss)
-
-			if distance < Config.DrawDistance then
-				sleep = 0
-				if distance < data.MarkerSize.x then
-					isInPDPresets, currentZone = true, k
-				end
-			end
-		end
-
-		for k,v in pairs(Config.BarberShops) do
-			local distance = #(playerCoords - v)
-
-			if distance < Config.DrawDistance then
-				sleep = 0
-				if distance < Config.MarkerSize.x then
-					isInBarberShop, currentZone = true, k
-				end
-			end
-		end
-		
-		if (isInClothingShop and not hasAlreadyEnteredMarker) or (isInClothingShop and LastZone ~= currentZone) then
-			hasAlreadyEnteredMarker, LastZone = true, currentZone
-			CurrentAction     = 'clothingMenu'
-			TriggerEvent('cd_drawtextui:ShowUI', 'show', "Press [E] To Change Clothing")
-		end
-
-		if (isInPDPresets and not hasAlreadyEnteredMarker) or (isInPDPresets and LastZone ~= currentZone) then
-			hasAlreadyEnteredMarker, LastZone = true, currentZone
-			CurrentAction     = 'pdMenu'
-			TriggerEvent('cd_drawtextui:ShowUI', 'show', "Press [E] To Change Outfits")
-		end
-
-		if (isInBarberShop and not hasAlreadyEnteredMarker) or (isInBarberShop and LastZone ~= currentZone) then
-			hasAlreadyEnteredMarker, LastZone = true, currentZone
-			CurrentAction     = 'barberMenu'
-			TriggerEvent('cd_drawtextui:ShowUI', 'show', "Press [E] To Change Hair/Face")
-		end
-
-		if not isInClothingShop and not isInPDPresets and not isInBarberShop and hasAlreadyEnteredMarker then
-			hasAlreadyEnteredMarker = false
-			sleep = 1000
-			TriggerEvent('fivem-appearance:hasExitedMarker', LastZone)
-			TriggerEvent('cd_drawtextui:HideUI')
-		end
-
-		Citizen.Wait(sleep)
-	end
-end)
-
 AddEventHandler('fivem-appearance:hasExitedMarker', function(zone)
 	CurrentAction = nil
 end)
 
-Citizen.CreateThread(function()
-	while true do
-
-		Citizen.Wait(0)
-
-		if CurrentAction ~= nil then
-
-			if IsControlPressed(1, 38) then
-				Citizen.Wait(500)
-
-				if CurrentAction == 'clothingMenu' then
-					TriggerEvent("fivem-appearance:clothingShop")
-				end
-				
-				if CurrentAction == 'barberMenu' then
-					TriggerEvent("fivem-appearance:barberMenu")
-				end
-
-				if QBCore.Functions.GetPlayerData().job.name =='police' then
-				    if CurrentAction == 'pdMenu' then
-					    TriggerEvent("fivem-appearance:pdMenu")
-					end
-				end
-			end
-		end
-	end
-end)
-
 RegisterNetEvent('fivem-appearance:clothingShop', function()
-    TriggerEvent('nh-context:sendMenu', {
+    TriggerEvent('qb-menu:sendMenu', {
         {
             id = 1,
             header = "Change clothing",
@@ -221,7 +86,7 @@ RegisterNetEvent('fivem-appearance:clothingShop', function()
 end)
 
 RegisterNetEvent('fivem-appearance:outfitsMenu', function()
-    TriggerEvent('nh-context:sendMenu', {
+    TriggerEvent('qb-menu:sendMenu', {
         {
             id = 1,
             header = "Change Outfit",
@@ -258,7 +123,7 @@ RegisterNetEvent('fivem-appearance:outfitsMenu', function()
 end)
 
 RegisterNetEvent('fivem-appearance:pdMenu', function()
-    TriggerEvent('nh-context:sendMenu', {
+    TriggerEvent('qb-menu:sendMenu', {
         
 		{
 			id = 1,
@@ -297,10 +162,9 @@ RegisterNetEvent('fivem-appearance:clothingMenu', function()
 		props = true
 	}
 	
-	exports['fivem-appearance']:startPlayerCustomization(function (appearance)
-		if (appearance) then
+	exports['fivem-appearance']:startPlayerCustomization(function(appearance)
+		if appearance then
 			TriggerServerEvent('fivem-appearance:save', appearance)
-			TriggerServerEvent("fivem-appearance:checkMoney", StoreCost)
 			print('Saved')
 		else
 			print('Canceled')
@@ -319,7 +183,7 @@ RegisterNetEvent('fivem-appearance:barberMenu', function()
 	}
 
 	exports['fivem-appearance']:startPlayerCustomization(function (appearance)
-		if (appearance) then
+		if appearance then
 			TriggerServerEvent('fivem-appearance:save', appearance)
 			print('Saved')
 		else
@@ -332,7 +196,7 @@ RegisterNetEvent('fivem-appearance:pickNewOutfit', function(data)
     local id = data.id
     local number = data.number
 	TriggerEvent('fivem-appearance:getOutfits')
-    TriggerEvent('nh-context:sendMenu', {
+    TriggerEvent('qb-menu:sendMenu', {
         {
             id = 1,
             header = "< Go Back",
@@ -344,7 +208,7 @@ RegisterNetEvent('fivem-appearance:pickNewOutfit', function(data)
     })
 	Citizen.Wait(300)
 	for i=1, #allMyOutfits, 1 do
-		TriggerEvent('nh-context:sendMenu', {
+		TriggerEvent('qb-menu:sendMenu', {
 			{
 				id = (1 + i),
 				header = allMyOutfits[i].name,
@@ -366,7 +230,7 @@ RegisterNetEvent('fivem-appearance:pickNewOutfit2', function(data)
     local id = data.id
     local number = data.number
 	TriggerEvent('fivem-appearance:getOutfits')
-    TriggerEvent('nh-context:sendMenu', {
+    TriggerEvent('qb-menu:sendMenu', {
         {
             id = 1,
             header = "< Go Back",
@@ -378,7 +242,7 @@ RegisterNetEvent('fivem-appearance:pickNewOutfit2', function(data)
     })
 	Citizen.Wait(300)
 	for i=1, #allMyOutfits, 1 do
-		TriggerEvent('nh-context:sendMenu', {
+		TriggerEvent('qb-menu:sendMenu', {
 			{
 				id = (1 + i),
 				header = allMyOutfits[i].name,
@@ -400,7 +264,7 @@ RegisterNetEvent('fivem-appearance:presetsOutfitMenu', function(data)
     local id = data.id
     local number = data.number
 	TriggerEvent('fivem-appearance:getpdPresets')
-    TriggerEvent('nh-context:sendMenu', {
+    TriggerEvent('qb-menu:sendMenu', {
         {
             id = 1,
             header = "< Go Back",
@@ -412,7 +276,7 @@ RegisterNetEvent('fivem-appearance:presetsOutfitMenu', function(data)
     })
 	Citizen.Wait(300)
 	for i=1, #allPDPresets, 1 do
-		TriggerEvent('nh-context:sendMenu', {
+		TriggerEvent('qb-menu:sendMenu', {
 			{
 				id = (1 + i),
 				header = allPDPresets[i].name,
@@ -434,7 +298,7 @@ RegisterNetEvent('fivem-appearance:pickNewOutfit3', function(data)
     local id = data.id
     local number = data.number
 	TriggerEvent('fivem-appearance:getOutfits')
-    TriggerEvent('nh-context:sendMenu', {
+    TriggerEvent('qb-menu:sendMenu', {
         {
             id = 1,
             header = "< Go Back",
@@ -446,7 +310,7 @@ RegisterNetEvent('fivem-appearance:pickNewOutfit3', function(data)
     })
 	Citizen.Wait(300)
 	for i=1, #allMyOutfits, 1 do
-		TriggerEvent('nh-context:sendMenu', {
+		TriggerEvent('qb-menu:sendMenu', {
 			{
 				id = (1 + i),
 				header = allMyOutfits[i].name,
@@ -464,18 +328,15 @@ RegisterNetEvent('fivem-appearance:pickNewOutfit3', function(data)
 	end
 end)
 
-RegisterNetEvent('fivem-appearance:getOutfits')
-AddEventHandler('fivem-appearance:getOutfits', function()
+RegisterNetEvent('fivem-appearance:getOutfits', function()
 	TriggerServerEvent('fivem-appearance:getOutfits')
 end)
 
-RegisterNetEvent('fivem-appearance:getpdPresets')
-AddEventHandler('fivem-appearance:getpdPresets', function()
+RegisterNetEvent('fivem-appearance:getpdPresets', function()
 	TriggerServerEvent('fivem-appearance:getpdPresets')
 end)
 
-RegisterNetEvent('fivem-appearance:sendOutfits')
-AddEventHandler('fivem-appearance:sendOutfits', function(myOutfits)
+RegisterNetEvent('fivem-appearance:sendOutfits', function(myOutfits)
 	local Outfits = {}
 	for i=1, #myOutfits, 1 do
 		table.insert(Outfits, {id = myOutfits[i].id, name = myOutfits[i].name, pedModel = myOutfits[i].ped, pedComponents = myOutfits[i].components, pedProps = myOutfits[i].props})
@@ -483,8 +344,7 @@ AddEventHandler('fivem-appearance:sendOutfits', function(myOutfits)
 	allMyOutfits = Outfits
 end)
 
-RegisterNetEvent('fivem-appearance:sendpdPresets')
-AddEventHandler('fivem-appearance:sendpdPresets', function(pdPresets)
+RegisterNetEvent('fivem-appearance:sendpdPresets', function(pdPresets)
 	local Outfits = {}
 	for i=1, #pdPresets, 1 do
 		table.insert(Outfits, {id = pdPresets[i].id, name = pdPresets[i].name, pedModel = pdPresets[i].ped, pedComponents = pdPresets[i].components, pedProps = pdPresets[i].props})
@@ -492,8 +352,7 @@ AddEventHandler('fivem-appearance:sendpdPresets', function(pdPresets)
 	allPDPresets = Outfits
 end)
 
-RegisterNetEvent('fivem-appearance:setOutfit')
-AddEventHandler('fivem-appearance:setOutfit', function(data)
+RegisterNetEvent('fivem-appearance:setOutfit', function(data)
 	local pedModel = data.ped
 	local pedComponents = data.components
 	local pedProps = data.props
@@ -515,8 +374,7 @@ AddEventHandler('fivem-appearance:setOutfit', function(data)
 	end
 end)
 
-RegisterNetEvent('fivem-appearance:setpdPreset')
-AddEventHandler('fivem-appearance:setpdPreset', function(data)
+RegisterNetEvent('fivem-appearance:setpdPreset', function(data)
 	local pedModel = data.ped
 	local pedComponents = data.components
 	local pedProps = data.props
@@ -539,7 +397,7 @@ AddEventHandler('fivem-appearance:setpdPreset', function(data)
 end)
 
 RegisterNetEvent('fivem-appearance:saveOutfit', function()
-	local keyboard = exports["brime-keyboard"]:KeyboardInput({
+	local keyboard = exports["qb-keyboard"]:KeyboardInput({
 		header = "Name Outfit", 
 		rows = {
 			{
@@ -563,7 +421,7 @@ RegisterNetEvent('fivem-appearance:deleteOutfitMenu2', function(data)
     local number = data.number
 	TriggerEvent('fivem-appearance:getOutfits')
 	Citizen.Wait(150)
-    TriggerEvent('nh-context:sendMenu', {
+    TriggerEvent('qb-menu:sendMenu', {
         {
             id = 1,
             header = "< Go Back",
@@ -574,7 +432,7 @@ RegisterNetEvent('fivem-appearance:deleteOutfitMenu2', function(data)
         },
     })
 	for i=1, #allMyOutfits, 1 do
-		TriggerEvent('nh-context:sendMenu', {
+		TriggerEvent('qb-menu:sendMenu', {
 			{
 				id = (1 + i),
 				header = allMyOutfits[i].name,
@@ -593,7 +451,7 @@ RegisterNetEvent('fivem-appearance:deleteOutfitMenu', function(data)
     local number = data.number
 	TriggerEvent('fivem-appearance:getOutfits')
 	Citizen.Wait(150)
-    TriggerEvent('nh-context:sendMenu', {
+    TriggerEvent('qb-menu:sendMenu', {
         {
             id = 1,
             header = "< Go Back",
@@ -604,7 +462,7 @@ RegisterNetEvent('fivem-appearance:deleteOutfitMenu', function(data)
         },
     })
 	for i=1, #allMyOutfits, 1 do
-		TriggerEvent('nh-context:sendMenu', {
+		TriggerEvent('qb-menu:sendMenu', {
 			{
 				id = (1 + i),
 				header = allMyOutfits[i].name,
@@ -618,9 +476,114 @@ RegisterNetEvent('fivem-appearance:deleteOutfitMenu', function(data)
 	end
 end)
 
-RegisterNetEvent('fivem-appearance:deleteOutfit')
-AddEventHandler('fivem-appearance:deleteOutfit', function(id)
+RegisterNetEvent('fivem-appearance:deleteOutfit', function(id)
 	TriggerServerEvent('fivem-appearance:deleteOutfit', id)
+end)
+
+-- Theads
+
+Citizen.CreateThread(function()
+	while true do
+
+		Citizen.Wait(0)
+
+		if CurrentAction ~= nil then
+
+			if IsControlPressed(1, 38) then
+				Citizen.Wait(500)
+
+				if CurrentAction == 'clothingMenu' then
+					TriggerEvent("fivem-appearance:clothingShop")
+				end
+				
+				if CurrentAction == 'barberMenu' then
+					TriggerEvent("fivem-appearance:barberMenu")
+				end
+
+				if QBCore.Functions.GetPlayerData().job.name =='police' then
+				    if CurrentAction == 'pdMenu' then
+					    TriggerEvent("fivem-appearance:pdMenu")
+					end
+				end
+			end
+		end
+	end
+end)
+
+Citizen.CreateThread(function()
+	while true do
+		local playerCoords, isInClothingShop, isInPDPresets, isInBarberShop, currentZone, letSleep = GetEntityCoords(PlayerPedId()), false, false, nil, true
+		local sleep = 2000
+		for k,v in pairs(Config.ClothingShops) do
+			local data = v
+			local distance = #(playerCoords - data.coords)
+
+			if distance < Config.DrawDistance then
+				sleep = 0
+				if distance < data.MarkerSize.x then
+					isInClothingShop, currentZone = true, k
+				end
+			end
+		end
+
+		for k,v in pairs(Config.PDPresets) do
+			local data = v
+			local distance = #(playerCoords - data.coordss)
+
+			if distance < Config.DrawDistance then
+				sleep = 0
+				if distance < data.MarkerSize.x then
+					isInPDPresets, currentZone = true, k
+				end
+			end
+		end
+
+		for k,v in pairs(Config.BarberShops) do
+			local distance = #(playerCoords - v)
+
+			if distance < Config.DrawDistance then
+				sleep = 0
+				if distance < Config.MarkerSize.x then
+					isInBarberShop, currentZone = true, k
+				end
+			end
+		end
+		
+		if (isInClothingShop and not hasAlreadyEnteredMarker) or (isInClothingShop and LastZone ~= currentZone) then
+			hasAlreadyEnteredMarker, LastZone = true, currentZone
+			CurrentAction     = 'clothingMenu'
+			TriggerEvent('qb-ui:ShowUI', '[E] Clothing')
+		end
+
+		if (isInPDPresets and not hasAlreadyEnteredMarker) or (isInPDPresets and LastZone ~= currentZone) then
+			hasAlreadyEnteredMarker, LastZone = true, currentZone
+			CurrentAction     = 'pdMenu'
+			TriggerEvent('qb-ui:ShowUI', '[E] PD Clothing')
+		end
+
+		if (isInBarberShop and not hasAlreadyEnteredMarker) or (isInBarberShop and LastZone ~= currentZone) then
+			hasAlreadyEnteredMarker, LastZone = true, currentZone
+			CurrentAction     = 'barberMenu'
+			TriggerEvent('qb-ui:ShowUI', '[E] Barber')
+		end
+
+		if not isInClothingShop and not isInPDPresets and not isInBarberShop and hasAlreadyEnteredMarker then
+			hasAlreadyEnteredMarker = false
+			sleep = 1000
+			TriggerEvent('fivem-appearance:hasExitedMarker', LastZone)
+			TriggerEvent('qb-ui:HideUI')
+		end
+
+		Citizen.Wait(sleep)
+	end
+end)
+
+-- Commands
+
+RegisterCommand('reloadskin', function()
+	QBCore.Functions.TriggerCallback('fivem-appearance:getPlayerSkin', function(appearance)
+		exports['fivem-appearance']:setPlayerAppearance(appearance)
+	end)
 end)
 
 RegisterCommand('propfix', function()
@@ -632,3 +595,22 @@ RegisterCommand('propfix', function()
         end
     end
 end)
+
+RegisterCommand('appearance', function()
+	local config = {
+		ped = true,
+		headBlend = true,
+		faceFeatures = true,
+		headOverlays = true,
+		components = true,
+		props = true,
+	}
+	exports['fivem-appearance']:startPlayerCustomization(function (appearance)
+		if (appearance) then
+			TriggerServerEvent('fivem-appearance:save', appearance)
+			print('Saved')
+		else
+			print('Canceled')
+		end
+	end, config)
+end, false)

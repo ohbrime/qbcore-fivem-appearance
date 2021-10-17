@@ -120,7 +120,7 @@ export const APPEARANCE_INITIAL_STATE: PedAppearance = {
 export const SETTINGS_INITIAL_STATE: AppearanceSettings = {
   ped: {
     model: {
-      items: ['mp_m_freemode_01', 'mp_f_freemode_01', 'player_zero'],
+      items: ['mp_m_freemode_01', 'mp_f_freemode_01'],
     },
   },
   components: [

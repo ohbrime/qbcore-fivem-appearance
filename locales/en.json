@@ -2,7 +2,7 @@
   "modal": {
     "save": {
       "title": "Save customization",
-      "description": "Are you sure you wanna save? You will remain ugly."
+      "description": "You will remain ugly"
     },
     "exit": {
       "title": "Exit customization",
@@ -108,7 +108,7 @@
     "lowerBody": "Legs",
     "bags": "Bags and parachute",
     "shoes": "Shoes",
-    "scarfAndChains": "Scarf and chains",
+    "scarfAndChains": "Scarf and chais",
     "shirt": "Shirt",
     "bodyArmor": "Body armor",
     "decals": "Decals",

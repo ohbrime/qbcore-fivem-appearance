@@ -1,21 +1,23 @@
-fx_version "cerulean"
-game { "gta5" }
+fx_version 'cerulean'
+game 'gta5'
 
-server_scripts {
-  'server.lua',
-}
+author 'Brime'
+version '1.2.0'
+
+shared_script 'config.lua'
 
 client_scripts {
   'typescript/build/client.js',
   'client.lua',
-  'config.lua',
 }
+
+server_script 'server.lua'
+
+ui_page 'ui/build/index.html'
 
 files {
   'ui/build/index.html',
   'ui/build/static/js/*.js',
   'locales/*.json',
-  'peds.json'
+  'peds.json',
 }
-
-ui_page 'ui/build/index.html'
