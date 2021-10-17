@@ -4,7 +4,7 @@ local QBCore = exports['qb-core']:GetCoreObject()
 
 QBCore.Functions.CreateCallback('fivem-appearance:getPlayerSkin', function(source, cb)
 	local Player = QBCore.Functions.GetPlayer(source)
-	local players = exports.oxmysql:fetch('SELECT skin FROM players WHERE citizenid = ?', {Player.PlayerData.citizenid})
+	local players = exports.oxmysql:fetchSync('SELECT skin FROM players WHERE citizenid = ?', {Player.PlayerData.citizenid})
 	local player, appearance = players[1]
 	if player.skin then
 		appearance = json.decode(player.skin)
