@@ -15,6 +15,7 @@ Orginal Script + UI: https://forum.cfx.re/t/release-fivem-appearance/2438537
 ```
 - Remove qbcore from qbcore-fivem-appearance or it will not work.
 - Rename QBCore to your Core Name or not.
+- Replace qb-clothes:client:CreateFirstCharacter to fivem-appearance:CreateFirstCharacter in qb-interior (main.lua)
 - Run the Appearance.sql
 ```
 ## Server Config
