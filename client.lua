@@ -1,17 +1,22 @@
-QBCore = exports['qb-core']:GetCoreObject()
+local QBCore                  = exports['qb-core']:GetCoreObject()
+local isLoggedIn              = false
 local LastZone                = nil
 local CurrentAction           = nil
 local CurrentActionMsg        = ''
 local hasAlreadyEnteredMarker = false
-local allMyOutfits = {}
+local allMyOutfits            = {}
 
 -- Events
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-    QBCore.Functions.TriggerCallback('fivem-appearance:getPlayerSkin', function(appearance)
-	exports['fivem-appearance']:setPlayerAppearance(appearance)
-    isLoggedIn = true
-    end)
+    QBCore.Functions.TriggerCallback('fivem-appearance:getPlayerSkin', function(pedAppearance)
+	    exports['fivem-appearance']:setPlayerAppearance(pedAppearance)
+		isLoggedIn = true
+	end)
+end)
+
+RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
+    isLoggedIn = false
 end)
 
 RegisterNetEvent('fivem-appearance:CreateFirstCharacter', function()
@@ -21,18 +26,32 @@ RegisterNetEvent('fivem-appearance:CreateFirstCharacter', function()
 		faceFeatures = true,
 		headOverlays = true,
 		components = true,
-		props = true,
+		props = true
 	}
 
-	exports['fivem-appearance']:setPlayerAppearance(appearance)
+	exports['fivem-appearance']:setPlayerAppearance(pedAppearance)
 
-	exports['fivem-appearance']:startPlayerCustomization(function(appearance)
-		if (appearance) then
-			TriggerServerEvent('fivem-appearance:save', appearance)
-			print('Saved')
-		else
-			print('Canceled')
-		end
+	exports['fivem-appearance']:startPlayerCustomization(function(pedAppearance)
+		local pedModel = GetEntityModel(PlayerPedId())
+	    TriggerServerEvent("fivem-appearance:saveSkin", pedModel, pedAppearance)
+		print('Saved')
+	end, config)
+end, false)
+
+RegisterNetEvent('fivem-appearance:AdminAppearance', function()
+	local config = {
+		ped = true,
+		headBlend = true,
+		faceFeatures = true,
+		headOverlays = true,
+		components = true,
+		props = true
+	}
+
+	exports['fivem-appearance']:startPlayerCustomization(function(pedAppearance)
+		local pedModel = GetEntityModel(PlayerPedId())
+	    TriggerServerEvent("fivem-appearance:saveSkin", pedModel, pedAppearance)
+		print('Saved')
 	end, config)
 end, false)
 
@@ -162,13 +181,10 @@ RegisterNetEvent('fivem-appearance:clothingMenu', function()
 		props = true
 	}
 	
-	exports['fivem-appearance']:startPlayerCustomization(function(appearance)
-		if appearance then
-			TriggerServerEvent('fivem-appearance:save', appearance)
-			print('Saved')
-		else
-			print('Canceled')
-		end
+	exports['fivem-appearance']:startPlayerCustomization(function(pedAppearance)
+		local pedModel = GetEntityModel(PlayerPedId())
+	    TriggerServerEvent("fivem-appearance:saveSkin", pedModel, pedAppearance)
+		print('Saved')
 	end, config)
 end)
 
@@ -182,13 +198,10 @@ RegisterNetEvent('fivem-appearance:barberMenu', function()
 		props = false
 	}
 
-	exports['fivem-appearance']:startPlayerCustomization(function (appearance)
-		if appearance then
-			TriggerServerEvent('fivem-appearance:save', appearance)
-			print('Saved')
-		else
-			print('Canceled')
-		end
+	exports['fivem-appearance']:startPlayerCustomization(function(pedAppearance)
+		local pedModel = GetEntityModel(PlayerPedId())
+	    TriggerServerEvent("fivem-appearance:saveSkin", pedModel, pedAppearance)
+		print('Saved')
 	end, config)
 end)
 
@@ -364,13 +377,15 @@ RegisterNetEvent('fivem-appearance:setOutfit', function(data)
 		playerPed = PlayerPedId()
 		exports['fivem-appearance']:setPedComponents(playerPed, pedComponents)
 		exports['fivem-appearance']:setPedProps(playerPed, pedProps)
-		local appearance = exports['fivem-appearance']:getPedAppearance(playerPed)
-		TriggerServerEvent('fivem-appearance:save', appearance)
+		local pedAppearance = exports['fivem-appearance']:getPedAppearance(playerPed)
+		local pedModel = GetEntityModel(PlayerPedId())
+	    TriggerServerEvent("fivem-appearance:saveSkin", pedModel, pedAppearance)
 	else
 		exports['fivem-appearance']:setPedComponents(playerPed, pedComponents)
 		exports['fivem-appearance']:setPedProps(playerPed, pedProps)
-		local appearance = exports['fivem-appearance']:getPedAppearance(playerPed)
-		TriggerServerEvent('fivem-appearance:save', appearance)
+		local pedAppearance = exports['fivem-appearance']:getPedAppearance(playerPed)
+		local pedModel = GetEntityModel(PlayerPedId())
+	    TriggerServerEvent("fivem-appearance:saveSkin", pedModel, pedAppearance)
 	end
 end)
 
@@ -386,13 +401,15 @@ RegisterNetEvent('fivem-appearance:setpdPreset', function(data)
 		playerPed = PlayerPedId()
 		exports['fivem-appearance']:setPedComponents(playerPed, pedComponents)
 		exports['fivem-appearance']:setPedProps(playerPed, pedProps)
-		local appearance = exports['fivem-appearance']:getPedAppearance(playerPed)
-		TriggerServerEvent('fivem-appearance:save', appearance)
+		local pedAppearance = exports['fivem-appearance']:getPedAppearance(playerPed)
+		local pedModel = GetEntityModel(PlayerPedId())
+	    TriggerServerEvent("fivem-appearance:saveSkin", pedModel, pedAppearance)
 	else
 		exports['fivem-appearance']:setPedComponents(playerPed, pedComponents)
 		exports['fivem-appearance']:setPedProps(playerPed, pedProps)
-		local appearance = exports['fivem-appearance']:getPedAppearance(playerPed)
-		TriggerServerEvent('fivem-appearance:save', appearance)
+		local pedAppearance = exports['fivem-appearance']:getPedAppearance(playerPed)
+		local pedModel = GetEntityModel(PlayerPedId())
+	    TriggerServerEvent("fivem-appearance:saveSkin", pedModel, pedAppearance)
 	end
 end)
 
@@ -581,8 +598,10 @@ end)
 -- Commands
 
 RegisterCommand('reloadskin', function()
-	QBCore.Functions.TriggerCallback('fivem-appearance:getPlayerSkin', function(appearance)
-		exports['fivem-appearance']:setPlayerAppearance(appearance)
+	QBCore.Functions.TriggerCallback('fivem-appearance:getPlayerSkin', function(pedAppearance)
+		exports['fivem-appearance']:setPlayerAppearance(pedAppearance)
+		print('Reloaded Skin')
+		print(pedAppearance)
 	end)
 end)
 
@@ -596,21 +615,19 @@ RegisterCommand('propfix', function()
     end
 end)
 
-RegisterCommand('appearance', function()
-	local config = {
-		ped = true,
-		headBlend = true,
-		faceFeatures = true,
-		headOverlays = true,
-		components = true,
-		props = true,
-	}
-	exports['fivem-appearance']:startPlayerCustomization(function (appearance)
-		if (appearance) then
-			TriggerServerEvent('fivem-appearance:save', appearance)
-			print('Saved')
-		else
-			print('Canceled')
-		end
-	end, config)
-end, false)
+-- RegisterCommand('appearance', function()
+-- 	local config = {
+-- 		ped = true,
+-- 		headBlend = true,
+-- 		faceFeatures = true,
+-- 		headOverlays = true,
+-- 		components = true,
+-- 		props = true
+-- 	}
+
+-- 	exports['fivem-appearance']:startPlayerCustomization(function(pedAppearance)
+-- 		local pedModel = GetEntityModel(PlayerPedId())
+-- 	    TriggerServerEvent("fivem-appearance:saveSkin", pedModel, pedAppearance)
+-- 		print('Saved')
+-- 	end, config)
+-- end, false)
