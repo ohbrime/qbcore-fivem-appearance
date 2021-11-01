@@ -8,7 +8,7 @@ Orginal Script + UI: https://forum.cfx.re/t/release-fivem-appearance/2438537
 
 - QB-Core Framework (Can be easily replaced): https://github.com/qbcore-framework/qb-core
 - NeroHiro’s Menu: https://github.com/ohbrime/qb-menu
-- NeroHiro’s Keyboard (Can be easily replaced): https://github.com/ohbrime/qb-keyboard
+- NeroHiro’s Keyboard (Can be easily replaced): https://github.com/ohbrime/qb-input
 - Any UI Text Script that you're server uses.
 
 ## Setup
