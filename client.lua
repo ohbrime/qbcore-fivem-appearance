@@ -1,5 +1,4 @@
 local QBCore                  = exports['qb-core']:GetCoreObject()
-local isLoggedIn              = false
 local LastZone                = nil
 local CurrentAction           = nil
 local CurrentActionMsg        = ''
@@ -11,12 +10,7 @@ local allMyOutfits            = {}
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     QBCore.Functions.TriggerCallback('fivem-appearance:getPlayerSkin', function(pedAppearance)
 	    exports['fivem-appearance']:setPlayerAppearance(pedAppearance)
-		isLoggedIn = true
 	end)
-end)
-
-RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
-    isLoggedIn = false
 end)
 
 RegisterNetEvent('fivem-appearance:CreateFirstCharacter', function()
