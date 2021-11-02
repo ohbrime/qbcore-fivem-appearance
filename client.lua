@@ -494,6 +494,39 @@ end)
 -- Theads
 
 Citizen.CreateThread(function()
+	for k,v in ipairs(Config.ClothingShops) do
+		local data = v
+		if data.blip == true then
+			local blip = AddBlipForCoord(data.coords)
+
+			SetBlipSprite(clothingShop, 366)
+            SetBlipColour(clothingShop, 47)
+            SetBlipScale  (clothingShop, 0.48)
+			SetBlipAsShortRange(blip, true)
+
+			BeginTextCommandSetBlipName('STRING')
+			AddTextComponentString("Clothing Shop")
+			EndTextCommandSetBlipName(blip)
+		end
+	end
+end)
+
+Citizen.CreateThread(function()
+	for k,v in ipairs(Config.BarberShops) do
+		local blip = AddBlipForCoord(v)
+
+		SetBlipSprite(barberShop, 71)
+        SetBlipColour(barberShop, 0)
+        SetBlipScale  (barberShop, 0.48)
+		SetBlipAsShortRange(blip, true)
+
+		BeginTextCommandSetBlipName('STRING')
+		AddTextComponentString("Barber Shop")
+		EndTextCommandSetBlipName(blip)
+	end
+end)
+
+Citizen.CreateThread(function()
 	while true do
 
 		Citizen.Wait(0)
