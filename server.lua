@@ -50,7 +50,7 @@ RegisterNetEvent('fivem-appearance:getOutfits', function()
 	local myOutfits = {}
 	local result = exports.oxmysql:executeSync('SELECT id, name, ped, components, props FROM players_outfits WHERE citizenid = ?', {Player.PlayerData.citizenid})
 	for i=1, #result, 1 do
-		table.executeSync(myOutfits, {id = result[i].id, name = result[i].name, ped = json.decode(result[i].ped), components = json.decode(result[i].components), props = json.decode(result[i].props)})
+		table.insert(myOutfits, {id = result[i].id, name = result[i].name, ped = json.decode(result[i].ped), components = json.decode(result[i].components), props = json.decode(result[i].props)})
 	end
 	TriggerClientEvent('fivem-appearance:sendOutfits', src, myOutfits)
 end)
